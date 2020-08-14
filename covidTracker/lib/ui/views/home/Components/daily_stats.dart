@@ -11,18 +11,17 @@ class DailyStats extends StatelessWidget {
   Widget build(BuildContext context) {
     var model = Provider.of<HomeScreenModel>(context);
     final value = new NumberFormat("#,##0", "en_US");
-    return FutureBuilder<GlobalStatsModel>(
-        future: model.stats.fetchGlobalStats(),
-        builder: (context, snapshot) {
-          if (snapshot.hasData) {
-            return Container(
-              height: Config.yMargin(context, 13),
-              width: Config.xMargin(context, 90),
+    return Container(
+      width: Config.xMargin(context, 90),
               decoration: BoxDecoration(
                   color: ThemeColors.containerColor,
                   borderRadius:
                       BorderRadius.circular(Config.yMargin(context, 2))),
-              child: Column(
+      child: FutureBuilder<GlobalStatsModel>(
+          future: model.stats.fetchGlobalStats(),
+          builder: (context, snapshot) {
+            if (snapshot.hasData) {
+              return Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Container(
@@ -44,7 +43,7 @@ class DailyStats extends StatelessWidget {
                   Container(
                     margin: EdgeInsets.only(
                         left: Config.xMargin(context, 5),
-                        right: Config.xMargin(context, 5)),
+                        right: Config.xMargin(context, 5), bottom: Config.yMargin(context, 2),),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
@@ -112,12 +111,15 @@ class DailyStats extends StatelessWidget {
                     ),
                   ),
                 ],
-              ),
+              );
+            }
+          else {
+            return Padding(
+              padding: const EdgeInsets.all(30.0),
+              child: Center(child: CircularProgressIndicator()),
             );
           }
-        else {
-          return Center(child: CircularProgressIndicator());
-        }
-        });
+          }),
+    );
   }
 }

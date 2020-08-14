@@ -4,7 +4,6 @@ import 'package:covidTracker/ui/views/news/news_view.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:data_connection_checker/data_connection_checker.dart';
-import 'dart:async';
 import 'package:connectivity/connectivity.dart';
 
 class MainViewModel extends ChangeNotifier {

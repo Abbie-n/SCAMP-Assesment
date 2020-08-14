@@ -1,9 +1,11 @@
+
 import 'package:covidTracker/core/http/apiResponse.dart';
 import 'package:covidTracker/core/models/models.dart';
 import 'package:covidTracker/core/routes/router.dart';
 import 'package:covidTracker/ui/shared/colors.dart';
 import 'package:covidTracker/ui/shared/config.dart';
 import 'package:covidTracker/ui/views/home/home_screen_model.dart';
+import 'package:covidTracker/ui/views/mainView/main_viewModel.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
@@ -14,9 +16,10 @@ class CountryStats extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var model = Provider.of<HomeScreenModel>(context);
+    var mainViewModel = Provider.of<MainViewModel>(context);
     final value = new NumberFormat("#,##0", "en_US");
     return Container(
-      height: Config.yMargin(context, 42),
+      // height: Config.yMargin(context, 42),
       width: Config.xMargin(context, 90),
       decoration: BoxDecoration(
         color: ThemeColors.containerColor,
@@ -56,7 +59,7 @@ class CountryStats extends StatelessWidget {
                         itemCount: length,
                         itemBuilder: (context, index) {
                           return Container(
-                            height: Config.yMargin(context, 9),
+                            // height: Config.yMargin(context, 9),
                             width: Config.xMargin(context, 90),
                             decoration: BoxDecoration(
                                 color: ThemeColors.containerColor,
@@ -85,8 +88,8 @@ class CountryStats extends StatelessWidget {
                                             CrossAxisAlignment.start,
                                         children: [
                                           Text(
-                                            value.format(snapshot
-                                                .data.data[index].totalConfirmed),
+                                            value.format(snapshot.data
+                                                .data[index].totalConfirmed),
                                             style: TextStyle(
                                               color: ThemeColors.infected,
                                               fontSize:
@@ -109,8 +112,8 @@ class CountryStats extends StatelessWidget {
                                             CrossAxisAlignment.start,
                                         children: [
                                           Text(
-                                            value.format(snapshot
-                                                .data.data[index].totalRecovered),
+                                            value.format(snapshot.data
+                                                .data[index].totalRecovered),
                                             style: TextStyle(
                                               color: ThemeColors.recovered,
                                               fontSize:
@@ -162,12 +165,13 @@ class CountryStats extends StatelessWidget {
                   ),
                   InkWell(
                     onTap: () {
-                      Navigator.pushNamed(context, Routes.countriesStats);
+                      mainViewModel.currentIndex = 1;
                     },
                     child: Container(
                       margin: EdgeInsets.only(
                         left: Config.xMargin(context, 5),
                         top: Config.yMargin(context, 2),
+                        bottom: Config.yMargin(context, 2),
                       ),
                       child: Text(
                         'See all',
@@ -182,7 +186,10 @@ class CountryStats extends StatelessWidget {
                 ],
               );
             } else {
-              return Center(child: CircularProgressIndicator());
+              return Padding(
+                padding: const EdgeInsets.all(30.0),
+                child: Center(child: CircularProgressIndicator()),
+              );
             }
           }),
     );

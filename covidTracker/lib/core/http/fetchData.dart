@@ -40,7 +40,7 @@ class DataService {
               totalRecovered: item['TotalRecovered']);
           countriesStats.add(country);
         }
-        print(countriesStats);
+        // print(countriesStats);
         return APIResponse<List<CountriesModel>>(data: countriesStats);
       }
       return APIResponse<List<CountriesModel>>(
