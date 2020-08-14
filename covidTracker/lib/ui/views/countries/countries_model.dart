@@ -47,11 +47,11 @@ class CountriesStatsModel extends ChangeNotifier {
 
   int compareCountries(CountriesModel a, CountriesModel b) {
     switch (selected) {
-      case 'Cases':
+      case 'Highest Cases':
         return b.totalConfirmed.compareTo(a.totalConfirmed);
-      case 'Recovered':
+      case 'Highest Recovered':
         return b.totalRecovered.compareTo(a.totalRecovered);
-      case 'Deaths':
+      case 'Highest Deaths':
         return b.totalDeaths.compareTo(a.totalDeaths);
       case 'None':
       default:
