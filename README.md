@@ -1,3 +1,3 @@
 # Preview of Covid-19 tracker
 
-![flutter](https://res.cloudinary.com/dpuxvcbwo/video/upload/v1597446739/covid-tracker_ka7hea.mp4)
+![flutter](https://res.cloudinary.com/dpuxvcbwo/image/upload/v1597447499/covid-tracker_optimized_cxles5.gif)
