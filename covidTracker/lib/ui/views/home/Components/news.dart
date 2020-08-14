@@ -3,16 +3,14 @@ import 'package:covidTracker/ui/shared/colors.dart';
 import 'package:covidTracker/ui/shared/config.dart';
 import 'package:covidTracker/ui/views/home/home_screen_model.dart';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 class News extends StatelessWidget {
-  int length;
+  final int length;
   News({this.length});
   @override
   Widget build(BuildContext context) {
     var model = Provider.of<HomeScreenModel>(context);
-    final value = new NumberFormat("#,##0", "en_US");
     return Container(
       height: Config.yMargin(context, 42),
       width: Config.xMargin(context, 90),
