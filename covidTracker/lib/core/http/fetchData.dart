@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:covidTracker/core/http/apiResponse.dart';
 import 'package:covidTracker/core/http/apiRoutes.dart';
 import 'package:covidTracker/core/models/models.dart';
 import 'package:http/http.dart' as http;
@@ -7,6 +8,7 @@ import 'package:http/http.dart' as http;
 class DataService {
   String url = ApiRoutes.baseUrl;
   String newsUrl = ApiRoutes.newsUrl;
+
   Future<GlobalStatsModel> fetchGlobalStats() async {
     String url = ApiRoutes.baseUrl;
     var result = await http.get(url);
@@ -21,31 +23,37 @@ class DataService {
     return GlobalStatsModel.fromJson(data);
   }
 
-  Future<List<CountryStatsModel>> fetchStatsPerCountry() async {
-    var result = await http.get(url);
-
-    List<CountryStatsModel> countryStats;
-
-    if (result.statusCode == 200) {
-      var stats = json.decode(result.body);
-      var data = stats['Countries'] as List;
-      //print(data);
-      countryStats = data
-          .map<CountryStatsModel>((json) => CountryStatsModel.json(json))
-          .toList();
-      print('Stats is: ${countryStats[0]}');
-    } else {
-      throw Exception('Ooops! No Info found!');
-    }
-
-    return countryStats;
+  Future<APIResponse<List<CountriesModel>>> fetchStatsPerCountry() async {
+    return http.get(url).then((data) {
+      if (data.statusCode == 200) {
+        final jsonData = json.decode(data.body);
+        var countries = jsonData['Countries'] as List;
+        final countriesStats = <CountriesModel>[];
+        for (var item in countries) {
+          final country = CountriesModel(
+              country: item['Country'],
+              newConfirmed: item['NewConfirmed'],
+              totalConfirmed: item['TotalConfirmed'],
+              newDeaths: item['NewDeaths'],
+              totalDeaths: item['TotalDeaths'],
+              newRecovered: item['NewRecovered'],
+              totalRecovered: item['TotalRecovered']);
+          countriesStats.add(country);
+        }
+        print(countriesStats);
+        return APIResponse<List<CountriesModel>>(data: countriesStats);
+      }
+      return APIResponse<List<CountriesModel>>(
+          error: true, errorMessage: 'An error occured');
+    }).catchError((_) => APIResponse<List<CountriesModel>>(
+        error: true, errorMessage: 'An error occured'));
   }
 
   Future<List<NewsModel>> fetchNews() async {
     String url = newsUrl;
     var result = await http.get(url);
 
-    List<NewsModel> articles;
+    List<NewsModel> articles = [];
 
     if (result.statusCode == 200) {
       var news = json.decode(result.body);

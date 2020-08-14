@@ -11,13 +11,13 @@ class SplasScreen extends StatelessWidget {
       body: Container(
         child: Column(
           children: [
-            Align(
-              alignment: Alignment.topRight,
-              child: Text('Testing',
-                  style: TextStyle(
-                    color: ThemeColors.textColor,
-                  )),
-            ),
+            // Align(
+            //   alignment: Alignment.topRight,
+            //   child: Text('Testing',
+            //       style: TextStyle(
+            //         color: ThemeColors.textColor,
+            //       )),
+            // ),
             Align(
               alignment: Alignment.topLeft,
               child: Container(
@@ -36,7 +36,7 @@ class SplasScreen extends StatelessWidget {
               alignment: Alignment.bottomRight,
               child: InkWell(
                 onTap: () {
-                  Navigator.pushNamed(context, Routes.mainView);
+                  Navigator.pushReplacementNamed(context, Routes.mainView);
                 },
                 child: Container(
                   height: Config.yMargin(context, 10),

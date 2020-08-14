@@ -1,4 +1,6 @@
+import 'package:covidTracker/core/http/apiResponse.dart';
 import 'package:covidTracker/core/models/models.dart';
+import 'package:covidTracker/core/routes/router.dart';
 import 'package:covidTracker/ui/shared/colors.dart';
 import 'package:covidTracker/ui/shared/config.dart';
 import 'package:covidTracker/ui/views/home/home_screen_model.dart';
@@ -7,7 +9,7 @@ import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 
 class CountryStats extends StatelessWidget {
-  int length;
+  final int length;
   CountryStats({this.length});
   @override
   Widget build(BuildContext context) {
@@ -20,7 +22,7 @@ class CountryStats extends StatelessWidget {
         color: ThemeColors.containerColor,
         borderRadius: BorderRadius.circular(Config.yMargin(context, 2)),
       ),
-      child: FutureBuilder<List<CountryStatsModel>>(
+      child: FutureBuilder<APIResponse<List<CountriesModel>>>(
           future: model.stats.fetchStatsPerCountry(),
           builder: (context, snapshot) {
             if (snapshot.hasData) {
@@ -47,7 +49,7 @@ class CountryStats extends StatelessWidget {
                         left: Config.xMargin(context, 5),
                         right: Config.xMargin(context, 5)),
                     child: ListView.separated(
-                       padding: EdgeInsets.all(0),
+                        padding: EdgeInsets.all(0),
                         separatorBuilder: (_, __) =>
                             Divider(color: ThemeColors.unselected),
                         physics: NeverScrollableScrollPhysics(),
@@ -64,9 +66,9 @@ class CountryStats extends StatelessWidget {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 SizedBox(
-                                  height: Config.yMargin(context, 1),
+                                  height: Config.yMargin(context, 2),
                                 ),
-                                Text(snapshot.data[index].country,
+                                Text(snapshot.data.data[index].country,
                                     style: TextStyle(
                                         color: ThemeColors.textColor,
                                         fontSize: Config.textSize(context, 3))),
@@ -84,7 +86,7 @@ class CountryStats extends StatelessWidget {
                                         children: [
                                           Text(
                                             value.format(snapshot
-                                                .data[index].totalConfirmed),
+                                                .data.data[index].totalConfirmed),
                                             style: TextStyle(
                                               color: ThemeColors.infected,
                                               fontSize:
@@ -108,7 +110,7 @@ class CountryStats extends StatelessWidget {
                                         children: [
                                           Text(
                                             value.format(snapshot
-                                                .data[index].totalRecovered),
+                                                .data.data[index].totalRecovered),
                                             style: TextStyle(
                                               color: ThemeColors.recovered,
                                               fontSize:
@@ -132,7 +134,7 @@ class CountryStats extends StatelessWidget {
                                         children: [
                                           Text(
                                             value.format(snapshot
-                                                .data[index].totalDeaths),
+                                                .data.data[index].totalDeaths),
                                             style: TextStyle(
                                               color: ThemeColors.deaths,
                                               fontSize:
@@ -158,18 +160,23 @@ class CountryStats extends StatelessWidget {
                           );
                         }),
                   ),
-                  Container(
-                    margin: EdgeInsets.only(
-                      left: Config.xMargin(context, 5),
-                      top: Config.yMargin(context, 2),
-                    ),
-                    child: Text(
-                      'See all',
-                      style: TextStyle(
-                          decoration: TextDecoration.underline,
-                          color: ThemeColors.textColor,
-                          fontSize: Config.textSize(context, 4),
-                          fontWeight: FontWeight.w300),
+                  InkWell(
+                    onTap: () {
+                      Navigator.pushNamed(context, Routes.countriesStats);
+                    },
+                    child: Container(
+                      margin: EdgeInsets.only(
+                        left: Config.xMargin(context, 5),
+                        top: Config.yMargin(context, 2),
+                      ),
+                      child: Text(
+                        'See all',
+                        style: TextStyle(
+                            decoration: TextDecoration.underline,
+                            color: ThemeColors.textColor,
+                            fontSize: Config.textSize(context, 4),
+                            fontWeight: FontWeight.w300),
+                      ),
                     ),
                   ),
                 ],
