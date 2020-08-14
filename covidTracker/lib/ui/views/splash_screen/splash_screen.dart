@@ -8,52 +8,54 @@ class SplasScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: ThemeColors.backgroundColor,
-      body: Container(
-        child: Column(
-          children: [
-            // Align(
-            //   alignment: Alignment.topRight,
-            //   child: Text('Testing',
-            //       style: TextStyle(
-            //         color: ThemeColors.textColor,
-            //       )),
-            // ),
-            Align(
-              alignment: Alignment.topLeft,
+      body: SafeArea(
               child: Container(
-                margin: EdgeInsets.only(
-                    top: Config.yMargin(context, 30),
-                    left: Config.xMargin(context, 10)),
-                child: Text(
-                  'Welcome to Covid Tracker!',
-                  style: TextStyle(
+          child: Column(
+            children: [
+              Align(
+                alignment: Alignment.topRight,
+                child: Text('Testing',
+                    style: TextStyle(
                       color: ThemeColors.textColor,
-                      fontSize: Config.textSize(context, 6)),
-                ),
+                    )),
               ),
-            ),
-            Align(
-              alignment: Alignment.bottomRight,
-              child: InkWell(
-                onTap: () {
-                  Navigator.pushReplacementNamed(context, Routes.mainView);
-                },
+              Align(
+                alignment: Alignment.topLeft,
                 child: Container(
-                  height: Config.yMargin(context, 10),
-                  width: Config.xMargin(context, 20),
                   margin: EdgeInsets.only(
-                      right: Config.xMargin(context, 20),
-                      top: Config.yMargin(context, 50)),
+                      top: Config.yMargin(context, 30),
+                      left: Config.xMargin(context, 10)),
                   child: Text(
-                    'View Stats',
+                    'Welcome to Covid Tracker!',
                     style: TextStyle(
                         color: ThemeColors.textColor,
-                        fontSize: Config.textSize(context, 4)),
+                        fontSize: Config.textSize(context, 6)),
                   ),
                 ),
               ),
-            )
-          ],
+              Align(
+                alignment: Alignment.bottomRight,
+                child: InkWell(
+                  onTap: () {
+                    Navigator.pushReplacementNamed(context, Routes.mainView);
+                  },
+                  child: Container(
+                    height: Config.yMargin(context, 10),
+                    width: Config.xMargin(context, 20),
+                    margin: EdgeInsets.only(
+                        right: Config.xMargin(context, 20),
+                        top: Config.yMargin(context, 50)),
+                    child: Text(
+                      'View Stats',
+                      style: TextStyle(
+                          color: ThemeColors.textColor,
+                          fontSize: Config.textSize(context, 4)),
+                    ),
+                  ),
+                ),
+              )
+            ],
+          ),
         ),
       ),
     );

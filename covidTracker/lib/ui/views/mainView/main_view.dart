@@ -15,7 +15,7 @@ class MainView extends StatelessWidget {
                 child: Column(
                   children: [
                     Text(
-                        'Ooops! It seems you don not have internet connection!')
+                        'Ooops! It seems you do not have internet connection!')
                   ],
                 ),
               )

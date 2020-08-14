@@ -25,7 +25,7 @@ class NewsView extends StatelessWidget {
             child: Column(
               children: [
                 Container(
-                  height: Config.yMargin(context, 85),
+                  // height: Config.yMargin(context, 85),
                   width: Config.xMargin(context, 90),
                   margin: EdgeInsets.only(
                     left: Config.xMargin(context, 5),
@@ -48,19 +48,21 @@ class NewsView extends StatelessWidget {
                                 height: Config.yMargin(context, 2),
                               ),
                               Container(
-                                height: Config.yMargin(context, 78),
+                                // height: Config.yMargin(context, 78),
                                 width: Config.xMargin(context, 90),
                                 margin: EdgeInsets.only(
                                     left: Config.xMargin(context, 5),
                                     right: Config.xMargin(context, 5)),
                                 child: ListView.separated(
+                                  primary: false,
+                                  shrinkWrap: true,
                                     padding: EdgeInsets.all(0),
                                     separatorBuilder: (_, __) =>
-                                        Divider(color: ThemeColors.textColor),
+                                        Divider(color: ThemeColors.textColor, height: 35,),
                                     itemCount: snapshot.data.length,
                                     itemBuilder: (context, index) {
                                       return Container(
-                                        height: Config.yMargin(context, 40),
+                                        // height: Config.yMargin(context, 40),
                                         width: Config.xMargin(context, 90),
                                         decoration: BoxDecoration(
                                             color: ThemeColors.containerColor,
@@ -120,7 +122,10 @@ class NewsView extends StatelessWidget {
                             ],
                           );
                         } else {
-                          return Center(child: CircularProgressIndicator());
+                          return Padding(
+                            padding: const EdgeInsets.all(30.0),
+                            child: Center(child: CircularProgressIndicator()),
+                          );
                         }
                       }),
                 ),

@@ -10,64 +10,59 @@ class CountriesStatsModel extends ChangeNotifier {
   APIResponse<List<CountriesModel>> countries =
       APIResponse<List<CountriesModel>>();
 
+  bool loading = true;
+
   List<String> filters = [
     'None',
-    'Cases',
-    'Recovered',
-    'Deaths',
+    'Highest Cases',
+    'Highest Recovered',
+    'Highest Deaths',
   ];
 
   String _selected;
-  String get selected => _selected;
+  String get selected => _selected ?? filters[0];
 
   set selectedFilter(String val) {
     _selected = val;
+    loading = true;
     notifyListeners();
   }
 
-  // APIResponse<List<CountriesModel>> searchedCountries =
-  //     APIResponse<List<CountriesModel>>();
-  // List<CountriesModel> get stuff => countries.data.toList().reversed;
-  // List<CountriesModel> anotherStuff = List<CountriesModel>();
-  // void empty() {
-  //   print(stuff);
-  //}
-  // void search(String value) {
-  //   anotherStuff = stuff.where((country) {
-  //     var countryName = country.country.toLowerCase();
-  //     return countryName.contains(value);
-  //   }).toList();
-  // }
+  List<CountriesModel> countryInSearch = List<CountriesModel>();
 
-  //get countries => _countries;
-  // Future<APIResponse<List<CountriesModel>>> get countriesList =>
-  //     stats.fetchStatsPerCountry();
+  Future<APIResponse<List<CountriesModel>>> getStatsByCountry() async {
+    APIResponse<List<CountriesModel>> response =
+        await stats.fetchStatsPerCountry();
+    response.data = response.data
+        .where((element) => element.country
+            .toLowerCase()
+            .contains(searchController.text.toLowerCase()))
+        .toList();
+    if (selected != 'None') {
+      response.data.sort(compareCountries);
+    }
+    loading = false;
+    return response;
+  }
 
-  // void search() {
-  //   var hello = [];
-  //   for (var item in countriesList) {
-  //     hello.add(item);
-  //     print(hello);
-  //     notifyListeners();
-  //   }
-  // }
+  int compareCountries(CountriesModel a, CountriesModel b) {
+    switch (selected) {
+      case 'Cases':
+        return b.totalConfirmed.compareTo(a.totalConfirmed);
+      case 'Recovered':
+        return b.totalRecovered.compareTo(a.totalRecovered);
+      case 'Deaths':
+        return b.totalDeaths.compareTo(a.totalDeaths);
+      case 'None':
+      default:
+        return 0;
+    }
+  }
+  void onChanged(String value, {List<CountriesModel> countriess}) {
+    // searchController.text = value.toLowerCase();
+    // _keyWord = value;
+    loading = true;
+    notifyListeners();
 
-  //get countries => stats.fetchStatsPerCountry();
-
-  // List<CountriesModel> countryInSearch = List<CountriesModel>();
-
-  // void countriesInDisplay() {
-  //   countryInSearch = countries;
-  //   notifyListeners();
-  // }
-
-  // void onChanged({String value, List<CountriesModel> countriess}) {
-  //   searchController.text = value.toLowerCase();
-
-  //   countryInSearch = countriess.where((country) {
-  //     var countryName = country.country.toLowerCase();
-  //     return countryName.contains(value);
-  //   }).toList();
-  // }
-
+  }
 }

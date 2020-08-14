@@ -13,6 +13,8 @@ class CountriesStats extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var model = Provider.of<CountriesStatsModel>(context);
+    rebuildAllChildren(context);
+    print(model.loading);
     return Scaffold(
       backgroundColor: ThemeColors.backgroundColor,
       appBar: AppBar(
@@ -47,9 +49,9 @@ class CountriesStats extends StatelessWidget {
                         BorderRadius.circular(Config.yMargin(context, 2)),
                   ),
                   child: FutureBuilder<APIResponse<List<CountriesModel>>>(
-                      future: model.stats.fetchStatsPerCountry(),
+                      future: model.getStatsByCountry(),
                       builder: (context, snapshot) {
-                        if (snapshot.hasData) {
+                        if (snapshot.hasData && !model.loading) {
                           return Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
@@ -90,87 +92,109 @@ class CountriesStats extends StatelessWidget {
     );
   }
 
+  void rebuildAllChildren(BuildContext context) {
+    void rebuild(Element el) {
+      el.markNeedsBuild();
+      el.visitChildren(rebuild);
+    }
+
+    (context as Element).visitChildren(rebuild);
+  }
+
   _searchField(BuildContext context) {
     var model = Provider.of<CountriesStatsModel>(context);
-    return Row(
-      children: <Widget>[
-        Container(
-          
-                  child: TextField(
-            textCapitalization: TextCapitalization.sentences,
-            textInputAction: TextInputAction.search,
-            controller: model.searchController,
-            onChanged: (value) {
-              print(value);
-              //model.onChanged(value);
-              //model.empty();
-            },
-            cursorColor: ThemeColors.recovered,
-            decoration: InputDecoration(
-              //prefixIcon: Icon(CupertinoIcons.search),
-              hintText: 'Search by country name',
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(Config.yMargin(context, 2)),
-                borderSide: BorderSide(color: ThemeColors.unselected, width: 2.0),
-              ),
-              disabledBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(Config.yMargin(context, 2)),
-                borderSide: BorderSide(color: ThemeColors.unselected, width: 2.0),
-              ),
-              enabledBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(Config.yMargin(context, 2)),
-                borderSide: BorderSide(color: ThemeColors.unselected, width: 1),
-              ),
-              focusedBorder: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(
-                  Config.yMargin(context, 2),
+    return Column(
+      children: [
+        Row(
+          children: <Widget>[
+            Expanded(
+              child: Container(
+                child: TextField(
+                  textCapitalization: TextCapitalization.sentences,
+                  textInputAction: TextInputAction.search,
+                  controller: model.searchController,
+                  onChanged: model.onChanged,
+                  cursorColor: ThemeColors.recovered,
+                  scrollPadding: EdgeInsets.zero,
+                  decoration: InputDecoration(
+                    fillColor: Color(0x33757575),
+                    focusColor: Color(0XFFFFFFFF),
+                    hoverColor: Color(0x33757575),
+                    filled: true,
+                    contentPadding: EdgeInsets.symmetric(horizontal: 10),
+                    //prefixIcon: Icon(CupertinoIcons.search),
+                    hintText: 'Search by country name',
+                    border: OutlineInputBorder(
+                      borderRadius:
+                          BorderRadius.circular(8),
+                      borderSide:
+                          BorderSide(color: ThemeColors.unselected, width: 2.0),
+                    ),
+                    disabledBorder: OutlineInputBorder(
+                      borderRadius:
+                          BorderRadius.circular(8),
+                      borderSide:
+                          BorderSide(color: ThemeColors.unselected, width: 2.0),
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius:
+                          BorderRadius.circular(8),
+                      borderSide:
+                          BorderSide(color: ThemeColors.unselected, width: 1),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(8
+                      ),
+                      borderSide:
+                          BorderSide(color: ThemeColors.unselected, width: 1),
+                    ),
+                    errorBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: Colors.red, width: 1),
+                    ),
+                  ),
                 ),
-                borderSide: BorderSide(color: ThemeColors.unselected, width: 1),
-              ),
-              errorBorder: OutlineInputBorder(
-                borderSide: BorderSide(color: Colors.red, width: 1),
               ),
             ),
-          ),
+            
+          ],
         ),
+        SizedBox(height: 8),
         Padding(
-            padding: EdgeInsets.only(top: Config.yMargin(context, 0.5)),
-            child: Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: <Widget>[
-                  Text(
-                    'Filter by',
+          padding: EdgeInsets.only(left: 8),
+          child:
+              Row(mainAxisAlignment: MainAxisAlignment.end, children: <Widget>[
+            Text(
+                'Sort by:',
+              ),
+              SizedBox(width: 8),
+            DropdownButton<String>(
+              items: model.filters.map((String value) {
+                return DropdownMenuItem<String>(
+                  value: value,
+                  child: new Text(
+                    value,
+                    style: TextStyle(
+                      fontSize: Config.textSize(context, 4),
+                      color: Color(0xaa433D57),
+                      fontWeight: FontWeight.w400,
+                    ),
                   ),
-                  DropdownButton<String>(
-                        items: model.filters
-                            .map((String value) {
-                          return DropdownMenuItem<String>(
-                            value: value,
-                            child: new Text(
-                              value,
-                              style: TextStyle(
-                                fontSize: Config.textSize(context, 3),
-                                color: Color(0xff433D57),
-                                fontWeight: FontWeight.w300,
-                              ),
-                            ),
-                          );
-                        }).toList(),
-                        value: model.selected,
-                        onChanged: (_) {
-                          model.selectedFilter = _;
-                          //model.filter();
-                        },
-                  )
-                  // IconButton(
-                  //     icon: Icon(
-                  //       Icons.keyboard_arrow_down,
-                  //       color: ThemeColors.unselected,
-                  //     ),
-                  //     onPressed: null)
-                ]),
-          ),
-        
+                );
+              }).toList(),
+              value: model.selected,
+              onChanged: (_) {
+                model.selectedFilter = _;
+                //model.filter();
+              },
+            )
+            // IconButton(
+            //     icon: Icon(
+            //       Icons.keyboard_arrow_down,
+            //       color: ThemeColors.unselected,
+            //     ),
+            //     onPressed: null)
+          ]),
+        ),
       ],
     );
   }
@@ -179,7 +203,7 @@ class CountriesStats extends StatelessWidget {
       AsyncSnapshot<APIResponse<List<CountriesModel>>> snapshot) {
     final value = new NumberFormat("#,##0", "en_US");
     return Container(
-      height: Config.yMargin(context, 9),
+      // height: Config.yMargin(context, 9),
       width: Config.xMargin(context, 90),
       decoration: BoxDecoration(
           color: ThemeColors.containerColor,

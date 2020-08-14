@@ -2,6 +2,7 @@ import 'package:covidTracker/core/models/models.dart';
 import 'package:covidTracker/ui/shared/colors.dart';
 import 'package:covidTracker/ui/shared/config.dart';
 import 'package:covidTracker/ui/views/home/home_screen_model.dart';
+import 'package:covidTracker/ui/views/mainView/main_viewModel.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -11,8 +12,9 @@ class News extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var model = Provider.of<HomeScreenModel>(context);
+    var mainViewModel = Provider.of<MainViewModel>(context);
     return Container(
-      height: Config.yMargin(context, 42),
+      // height: Config.yMargin(context, 42),
       width: Config.xMargin(context, 90),
       decoration: BoxDecoration(
         color: ThemeColors.containerColor,
@@ -39,19 +41,21 @@ class News extends StatelessWidget {
                     ),
                   ),
                   Container(
-                    height: Config.yMargin(context, 30),
+                    // height: Config.yMargin(context, 30),
                     width: Config.xMargin(context, 90),
                     margin: EdgeInsets.only(
                         left: Config.xMargin(context, 5),
                         right: Config.xMargin(context, 5)),
                     child: ListView.separated(
+                      primary: false,
+                      shrinkWrap: true,
                         padding: EdgeInsets.all(0),
                         separatorBuilder: (_, __) =>
-                            Divider(color: ThemeColors.textColor),
+                            Divider(color: ThemeColors.textColor, height: 35,),
                         itemCount: length,
                         itemBuilder: (context, index) {
                           return Container(
-                            height: Config.yMargin(context, 32),
+                            // height: Config.yMargin(context, 32),
                             width: Config.xMargin(context, 90),
                             decoration: BoxDecoration(
                                 color: ThemeColors.containerColor,
@@ -99,24 +103,33 @@ class News extends StatelessWidget {
                           );
                         }),
                   ),
-                  Container(
-                    margin: EdgeInsets.only(
-                      left: Config.xMargin(context, 5),
-                      top: Config.yMargin(context, 2),
-                    ),
-                    child: Text(
-                      'See all',
-                      style: TextStyle(
-                          decoration: TextDecoration.underline,
-                          color: ThemeColors.textColor,
-                          fontSize: Config.textSize(context, 4),
-                          fontWeight: FontWeight.w300),
+                  InkWell(
+                    onTap: () {
+                      mainViewModel.currentIndex = 2;
+                    },
+                    child: Container(
+                      margin: EdgeInsets.only(
+                        left: Config.xMargin(context, 5),
+                        top: Config.yMargin(context, 2),
+                        bottom: Config.yMargin(context, 2),
+                      ),
+                      child: Text(
+                        'See all',
+                        style: TextStyle(
+                            decoration: TextDecoration.underline,
+                            color: ThemeColors.textColor,
+                            fontSize: Config.textSize(context, 4),
+                            fontWeight: FontWeight.w300),
+                      ),
                     ),
                   ),
                 ],
               );
             } else {
-              return Center(child: CircularProgressIndicator());
+              return Padding(
+                padding: const EdgeInsets.all(30.0),
+                child: Center(child: CircularProgressIndicator()),
+              );
             }
           }),
     );
